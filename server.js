@@ -44,7 +44,7 @@ app.prepare().then(() => {
   server.use(passport.session());
 
 
-  server.get('/home', (req, res) => {
+  server.get('/home', isAuth, (req, res) => {
     console.log('user in home page is')
     console.log(req.user.username)
     return app.render(req, res, '/home', req.query)
@@ -141,4 +141,12 @@ function genPassword(password) {
     salt: salt,
     hash: genHash
   };
+}
+
+  isAuth = (req, res, next) => {
+  if (req.isAuthenticated()) {
+      next();
+  } else {
+      res.status(401).json({ msg: 'You are not authorized to view this resource' });
+  }
 }
